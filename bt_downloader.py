@@ -42,10 +42,12 @@ class BraintrustAPIClient:
         self.session.mount("http://", adapter)
         self.session.mount("https://", adapter)
 
-        # Set headers
+        # Set headers for Braintrust API
         self.session.headers.update({
             'Authorization': f'Bearer {api_key}',
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Accept-Encoding': 'gzip',
             'User-Agent': 'braintrust-downloader/1.0'
         })
 
@@ -78,7 +80,9 @@ class BraintrustAPIClient:
                 # Try the standard endpoint first
                 response = self._make_request('GET', 'experiment', params)
 
-                if 'experiments' in response:
+                if 'objects' in response:
+                    batch = response['objects']
+                elif 'experiments' in response:
                     batch = response['experiments']
                 elif 'data' in response:
                     batch = response['data']
@@ -123,7 +127,9 @@ class BraintrustAPIClient:
                 # Try the standard endpoint first
                 response = self._make_request('GET', 'dataset', params)
 
-                if 'datasets' in response:
+                if 'objects' in response:
+                    batch = response['objects']
+                elif 'datasets' in response:
                     batch = response['datasets']
                 elif 'data' in response:
                     batch = response['data']
@@ -165,9 +171,11 @@ class BraintrustAPIClient:
                 params['cursor'] = cursor
 
             try:
-                response = self._make_request('GET', f'experiment/{experiment_id}/events', params)
+                response = self._make_request('GET', f'experiment/{experiment_id}/fetch', params)
 
-                if 'events' in response:
+                if 'objects' in response:
+                    batch = response['objects']
+                elif 'events' in response:
                     batch = response['events']
                 elif 'data' in response:
                     batch = response['data']
@@ -199,9 +207,11 @@ class BraintrustAPIClient:
                 params['cursor'] = cursor
 
             try:
-                response = self._make_request('GET', f'dataset/{dataset_id}/events', params)
+                response = self._make_request('GET', f'dataset/{dataset_id}/fetch', params)
 
-                if 'events' in response:
+                if 'objects' in response:
+                    batch = response['objects']
+                elif 'events' in response:
                     batch = response['events']
                 elif 'data' in response:
                     batch = response['data']
@@ -270,7 +280,9 @@ def download_braintrust_data(project_id: str, api_key: str, output_dir: str = "b
     """Download all experiments and datasets from a Braintrust project"""
 
     client = BraintrustAPIClient(api_key)
-    output_path = Path(output_dir)
+
+    # Create project-specific directory within output_dir
+    output_path = Path(output_dir) / project_id
 
     print(f"Downloading data for project: {project_id}")
     print(f"Output directory: {output_path.absolute()}")

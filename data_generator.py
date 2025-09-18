@@ -79,8 +79,7 @@ class BraintrustGenerator:
         project_name = f"{task}_{domain}_{suffix}"
 
         project_data = {
-            "name": project_name,
-            "description": f"Random {task} project for {domain} domain"
+            "name": project_name
         }
 
         print(f"Creating project: {project_name}")
@@ -97,8 +96,7 @@ class BraintrustGenerator:
 
         experiment_data = {
             "name": experiment_name,
-            "project_id": project_id,
-            "description": f"Random experiment for {task} task"
+            "project_id": project_id
         }
 
         print(f"Creating experiment: {experiment_name}")
@@ -115,8 +113,7 @@ class BraintrustGenerator:
 
         dataset_data = {
             "name": dataset_name,
-            "project_id": project_id,
-            "description": f"Random dataset for {domain} domain"
+            "project_id": project_id
         }
 
         print(f"Creating dataset: {dataset_name}")

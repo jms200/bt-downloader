@@ -1,3 +1,6 @@
+braintrust_generated_data.json
+braintrust_data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
